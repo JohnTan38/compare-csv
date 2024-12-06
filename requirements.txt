@@ -1,0 +1,6 @@
+streamlit
+pandas
+numpy
+openpyxl
+csv-compare-tool
+csv-diff
