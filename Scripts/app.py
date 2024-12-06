@@ -46,13 +46,14 @@ if uploaded_file_1 and uploaded_file_2:
     with open(path_2, "wb") as f:
                 f.write(uploaded_file_2.getvalue())
     df_2 = pd.read_csv(uploaded_file_2)
-    lst_columns_1 = list(df_1.columns.values)
-    lst_columns_2 = list(df_2.columns.values)
-    lst_columns = list(set(lst_columns_1).intersection(lst_columns_2))
+    #lst_columns_1 = list(df_1.columns.values)
+    #lst_columns_2 = list(df_2.columns.values)
+    #lst_columns = list(set(lst_columns_1).intersection(lst_columns_2))
     key_column = st.multiselect('Select column to compare', lst_columns, placeholder='Choose 1', max_selections=2)
     if key_column:
-            df_1 = df_1[[lst_columns[0],key_column[0]]]
-            df_2 = df_2[[lst_columns[0],key_column[0]]]
+            key_select=key_column[0]
+            #df_1 = df_1[[lst_columns[0],key_column[0]]]
+            #df_2 = df_2[[lst_columns[0],key_column[0]]]
 
     if st.button("Compare"):
         comparer = CSVComparer(df_1, df_2, key_column[0])
