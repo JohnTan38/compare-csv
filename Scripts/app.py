@@ -73,8 +73,18 @@ if uploaded_file_1 and uploaded_file_2:
         added_data = data['added']
         removed_data = data['removed']
 
-        df_added = pd.DataFrame(added_data)
-        df_removed = pd.DataFrame(removed_data)
+        import re
+        # Function to clean the keys in the dictionary
+        def clean_keys(d):
+            #return {k.replace('\\u00ef\\u00bb\\u00bf', ''): v for k, v in d.items()}
+            return {re.sub(r'[^a-zA-Z]', '', k): v for k, v in d.items()}
+
+        # Clean the keys in the 'added' and 'removed' lists
+        added_cleaned = [clean_keys(item) for item in data['added']]
+        removed_cleaned = [clean_keys(item) for item in data['removed']]
+
+        df_added = pd.DataFrame(added_cleaned)
+        df_removed = pd.DataFrame(removed_cleaned)
     
         # Iterate over the 'changed' section of the JSON output
         for item in data['changed']:
