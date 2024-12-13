@@ -30,10 +30,19 @@ def success_df(html_str):
     st.markdown(html_str, unsafe_allow_html=True)
 title_main("CSV Compare")
 
-uploaded_file_1 = st.file_uploader("Upload the original CSV file", type=["csv"])
-uploaded_file_2 = st.file_uploader("Upload the changed CSV file", type=["csv"])
-
 import tempfile
+from tempfile import NamedTemporaryFile
+from pathlib import Path
+uploaded_file_1 = st.file_uploader("Upload the original CSV file", type=["csv"])
+if (uploaded_file_1 is not None) and (Path(uploaded_file_1.name).suffix != ".csv"):
+      #suffix_1 = Path(uploaded_file_1.name).suffix
+                st.write("Please upload a CSV file.")
+uploaded_file_2 = st.file_uploader("Upload the changed CSV file", type=["csv"])
+if uploaded_file_2 is not None and (Path(uploaded_file_2.name).suffix != ".csv"):
+      #suffix_2 = Path(uploaded_file_1.name).suffix
+                st.error("Please upload a CSV file.")
+
+#import tempfile
 import os
 if uploaded_file_1 and uploaded_file_2:
     temp_dir = tempfile.mkdtemp()
@@ -51,6 +60,7 @@ if uploaded_file_1 and uploaded_file_2:
     #lst_columns = list(set(lst_columns_1).intersection(lst_columns_2))
     key_column = st.multiselect('Select column to compare', lst_columns, placeholder='Choose 1', max_selections=2)
     if key_column:
+            print(key_column)
             key_select=key_column[0]
             #df_1 = df_1[[lst_columns[0],key_column[0]]]
             #df_2 = df_2[[lst_columns[0],key_column[0]]]
@@ -73,18 +83,8 @@ if uploaded_file_1 and uploaded_file_2:
         added_data = data['added']
         removed_data = data['removed']
 
-        import re
-        # Function to clean the keys in the dictionary
-        def clean_keys(d):
-            #return {k.replace('\\u00ef\\u00bb\\u00bf', ''): v for k, v in d.items()}
-            return {re.sub(r'[^a-zA-Z]', '', k): v for k, v in d.items()}
-
-        # Clean the keys in the 'added' and 'removed' lists
-        added_cleaned = [clean_keys(item) for item in data['added']]
-        removed_cleaned = [clean_keys(item) for item in data['removed']]
-
-        df_added = pd.DataFrame(added_cleaned)
-        df_removed = pd.DataFrame(removed_cleaned)
+        df_added = pd.DataFrame(added_data)
+        df_removed = pd.DataFrame(removed_data)
     
         # Iterate over the 'changed' section of the JSON output
         for item in data['changed']:
